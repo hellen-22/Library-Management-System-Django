@@ -1,0 +1,38 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% block content %}
+<div class="row w-100 mx-0">
+    <div class="col-lg-4 mx-auto">
+      <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+            <h4>Hello! Welcome back </h4>
+            <h6 class="fw-light">Sign in to continue.</h6>
+            <form class="pt-3" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="email" class="form-control form-control-lg" id="login-email" name="email" placeholder="Enter Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control form-control-lg" id="login-password" name="password" placeholder="Enter Password" required>
+                </div>
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium btn-rounded auth-form-btn">LOGIN</button>
+                </div>
+                <div class="my-2 d-flex justify-content-between align-items-center">
+                    <div class="form-check">
+                    <label class="form-check-label text-muted">
+                        <input type="checkbox" class="form-check-input">
+                        Keep me signed in
+                    </label>
+                    </div>
+                    <a href="" class="auth-link text-black">Forgot password?</a>
+                </div>
+
+                <div class="text-center mt-4 fw-light">
+                    Don't have an account? <a href="" class="text-primary">Create</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+  </div>
+{% endblock content %}
