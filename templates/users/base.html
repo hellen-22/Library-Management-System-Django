@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="{% static 'assets/vendors/typicons/typicons.css' %}">
   <link rel="stylesheet" href="{% static 'assets/vendors/simple-line-icons/css/simple-line-icons.css' %}">
   <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+  <link rel="stylesheet" href="{% static 'main.css' %}">
   <!-- endinject -->
   <!-- Plugin css for this page -->
   <!-- End plugin css for this page -->
@@ -51,7 +52,7 @@
 <script text="javascript">
   setTimeout(fade_out, 3000);
   function fade_out() {
-      $(".messages").fadeOut().empty();
+      $(".form-error").fadeOut().empty();
   }
   $(".form")[0].reset(); // this is to reset the form
 </script>

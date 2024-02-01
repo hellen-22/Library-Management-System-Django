@@ -1,0 +1,12 @@
+.form-error{
+    color: red;
+}
+
+.form-error ul{
+    margin: 0;
+    padding: 0;
+}
+
+.form-error ul li{
+    list-style: none;
+}
