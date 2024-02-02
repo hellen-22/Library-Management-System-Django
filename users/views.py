@@ -21,7 +21,10 @@ class LoginView(View):
 
             if user is not None:
                 login(request, user)
-                return redirect("home")
+
+                redirect_url = request.GET.get("next", "home")
+
+                return redirect(redirect_url)
 
             form.add_error(None, "Invalid email or password")
 
