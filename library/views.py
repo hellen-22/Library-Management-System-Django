@@ -3,8 +3,8 @@ from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 
-from .forms import AddMemberForm, UpdateMemberForm
-from .models import Member
+from .forms import AddBookForm, AddMemberForm, UpdateMemberForm
+from .models import Book, Member
 
 
 class HomeView(View):
@@ -59,3 +59,52 @@ class DeleteMemberView(View):
         member = Member.objects.get(pk=kwargs["pk"])
         member.delete()
         return redirect("members")
+
+
+@method_decorator(login_required, name="dispatch")
+class AddBookView(View):
+    def get(self, request, *args, **kwargs):
+        form = AddBookForm()
+        return render(request, "books/add-book.html", {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        form = AddBookForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect("books")
+
+        return render(request, "books/add-book.html", {"form": form})
+
+
+@method_decorator(login_required, name="dispatch")
+class BooksListView(View):
+    def get(self, request, *args, **kwargs):
+        books = Book.objects.all()
+        return render(request, "books/list-books.html", {"books": books})
+
+
+@method_decorator(login_required, name="dispatch")
+class UpdateBookDetailsView(View):
+    def get(self, request, *args, **kwargs):
+        book = Book.objects.get(pk=kwargs["pk"])
+        form = AddBookForm(instance=book)
+        return render(request, "books/update-book.html", {"form": form, "book": book})
+
+    def post(self, request, *args, **kwargs):
+        book = Book.objects.get(pk=kwargs["pk"])
+        form = AddBookForm(request.POST, instance=book)
+
+        if form.is_valid():
+            form.save()
+            return redirect("books")
+
+        return render(request, "books/update-book.html", {"form": form, "book": book})
+
+
+@method_decorator(login_required, name="dispatch")
+class DeleteBookView(View):
+    def get(self, request, *args, **kwargs):
+        book = Book.objects.get(pk=kwargs["pk"])
+        book.delete()
+        return redirect("books")

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Update Book{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-6 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Update Book</h4>
+          <p class="card-description">
+            Add A Book
+          </p>
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger form-error" role="alert">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+          {% endif %}
+          <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+              {{ form.title.label_tag }}
+              {{ form.title }}
+                <div class="form-error">{{ form.title.errors }}</div>
+            </div>
+            <div class="form-group">
+                {{ form.author.label_tag }}
+                {{ form.author }}
+                    <div class="form-error">{{ form.author.errors }}</div>
+            </div>
+            <div class="form-group">
+                {{ form.category.label_tag }}
+                {{ form.category }}
+                    <div class="form-error">{{ form.category.errors }}</div>
+            </div>
+
+            <div class="form-group">
+                {{ form.quantity.label_tag }}
+                {{ form.quantity }}
+                    <div class="form-error">{{ form.quantity.errors }}</div>
+            </div>
+
+            <div class="form-group">
+                {{ form.borrowing_fee.label_tag }}
+                {{ form.borrowing_fee }}
+                    <div class="form-error">{{ form.borrowing_fee.errors }}</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-md me-2">Update</button>
+            <a class="btn btn-light" href="{% url 'books' %}">Cancel</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
