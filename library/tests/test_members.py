@@ -12,7 +12,7 @@ class TestAddMemberView(TestCase):
         self.user = Librarian.objects.create_user(email="test@gmail.com", password="password")
 
     def test_login_required(self):
-        self.client.get(reverse("add-member"), self.data)
+        self.client.post(reverse("add-member"), self.data)
 
         self.assertEqual(Member.objects.count(), 0)
 
