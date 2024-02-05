@@ -3,8 +3,8 @@ from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 
-from .forms import AddBookForm, AddMemberForm, UpdateMemberForm
-from .models import Book, Member
+from .forms import AddBookForm, AddMemberForm, IssueBookForm, IssueMemberBookForm, UpdateMemberForm
+from .models import Book, BorrowedBook, Member
 
 
 class HomeView(View):
@@ -108,3 +108,52 @@ class DeleteBookView(View):
         book = Book.objects.get(pk=kwargs["pk"])
         book.delete()
         return redirect("books")
+
+
+class IssueBookView(View):
+    def get(self, request, *args, **kwargs):
+        form = IssueBookForm()
+        return render(request, "books/issue-book.html", {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        form = IssueBookForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect("books")
+
+        return render(request, "books/issue-book.html", {"form": form})
+
+
+class IssueMemberBookView(View):
+    def get(self, request, *args, **kwargs):
+        member = Member.objects.get(pk=kwargs["pk"])
+        form = IssueMemberBookForm()
+        return render(request, "books/issue-member-book.html", {"form": form, "member": member})
+
+    def post(self, request, *args, **kwargs):
+        member = Member.objects.get(pk=kwargs["pk"])
+        form = IssueMemberBookForm(request.POST)
+
+        if form.is_valid():
+            lended_book = form.save(commit=False)
+            lended_book.member = member
+            lended_book.save()
+
+            return redirect("members")
+
+        return render(request, "books/issue-member-book.html", {"form": form, "member": member})
+
+
+class IssuedBooksListView(View):
+    def get(self, request, *args, **kwargs):
+        books = BorrowedBook.objects.all()
+        return render(request, "books/issued-books.html", {"books": books})
+
+
+class ChangeBorrowedBookStatusView(View):
+    def get(self, request, *args, **kwargs):
+        book = BorrowedBook.objects.get(pk=kwargs["pk"])
+        book.returned = True
+        book.save()
+        return redirect("issued-books")

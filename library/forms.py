@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from .models import CATEGORY_CHOICES, Book, Member
+from .models import CATEGORY_CHOICES, Book, BorrowedBook, Member
 
 
 class AddMemberForm(forms.ModelForm):
@@ -70,3 +70,46 @@ class AddBookForm(forms.ModelForm):
     class Meta:
         model = Book
         fields = ["title", "author", "category", "quantity", "borrowing_fee"]
+
+
+class IssueBookForm(forms.ModelForm):
+    book = forms.ModelChoiceField(
+        queryset=Book.objects.filter(quantity__gt=0),
+        widget=forms.Select(attrs={"class": "form-control form-control-lg"}),
+    )
+
+    member = forms.ModelChoiceField(
+        queryset=Member.objects.all(),
+        widget=forms.Select(attrs={"class": "form-control form-control-lg js-example-basic-single w-100"}),
+    )
+
+    return_date = forms.DateField(
+        widget=forms.DateInput(attrs={"class": "form-control form-control-lg", "type": "date"})
+    )
+
+    fine = forms.DecimalField(
+        widget=forms.NumberInput(attrs={"class": "form-control form-control-lg", "placeholder": "Enter Fine"})
+    )
+
+    class Meta:
+        model = BorrowedBook
+        fields = ["book", "member", "return_date", "fine"]
+
+
+class IssueMemberBookForm(forms.ModelForm):
+    book = forms.ModelChoiceField(
+        queryset=Book.objects.filter(quantity__gt=0),
+        widget=forms.Select(attrs={"class": "form-control form-control-lg"}),
+    )
+
+    return_date = forms.DateField(
+        widget=forms.DateInput(attrs={"class": "form-control form-control-lg", "type": "date"})
+    )
+
+    fine = forms.DecimalField(
+        widget=forms.NumberInput(attrs={"class": "form-control form-control-lg", "placeholder": "Enter Fine"})
+    )
+
+    class Meta:
+        model = BorrowedBook
+        fields = ["book", "return_date", "fine"]

@@ -20,6 +20,9 @@
   <link rel="stylesheet" href="{% static 'assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'assets/js/select.dataTables.min.css' %}">
   <!-- End plugin css for this page -->
+  <link rel="stylesheet" href="{% static 'assets/vendors/select2/select2.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css' %}">
+
   <!-- inject:css -->
   <link rel="stylesheet" href="{% static 'assets/css/vertical-layout-light/style.css' %}">
   <!-- endinject -->
@@ -430,6 +433,7 @@
         <ul class="nav flex-column sub-menu">
           <li class="nav-item"><a class="nav-link" href="{% url 'add-book' %}">Add Book</a></li>
           <li class="nav-item"><a class="nav-link" href="{% url 'books' %}">View Books</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'issued-books' %}">Issued Books</a></li>
         </ul>
       </div>
     </li>
@@ -476,6 +480,7 @@
   <!-- plugins:js -->
   <script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
   <script src="{% static 'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
+  <script src="{% static 'assets/vendors/select2/select2.min.js' %}"></script>
   <!-- endinject -->
   <!-- Plugin js for this page -->
   <script src="{% static 'assets/vendors/chart.js/Chart.min.js' %}"></script>

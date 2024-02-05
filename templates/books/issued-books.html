@@ -6,18 +6,16 @@
         <div class="card">
             <div class="card-header">
                 <div class="col-5">
-                  <h5 class="card-title mt-4">BOOKS LIST</h5>
+                  <h5 class="card-title mt-4">BORROWED BOOKS LIST</h5>
                 </div>
                 <div class="row">
                     <div class="col-md-4">
                         <div class="mb-3">
-                            <a href="{% url 'add-book' %}" class="btn btn-primary">Add Book</a>
+                            <a href="{% url 'issue-book' %}" class="btn btn-primary">Issue Book</a>
                         </div>
                     </div>
                     <div class="col-md-8">
-                        <div class="mb-3">
-                            <a href="{% url 'issue-book' %}" class="btn btn-primary">Issue Book</a>
-                        </div>
+                        <!-- Search  -->
                     </div>
                 </div>
             </div>
@@ -28,9 +26,10 @@
                     <tr>
                         <th>Index</th>
                         <th>Title</th>
-                        <th>Author</th>
-                        <th>Category</th>
+                        <th>Return Date</th>
+                        <th>Member</th>
                         <th>Borrowing Fee</th>
+                        <th>Fine</th>
                         <th>Status</th>
                         <th colspan="3">Actions</th>
                     </tr>
@@ -39,22 +38,27 @@
                         {% for book in books %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ book.title }}</td>
-                                <td>{{ book.author }}</td>
-                                <td>{{ book.category }}</td>
-                                <td>{{ book.borrowing_fee }}</td>
-                                <td class="{% if book.status == 'available' %} text-success {% else %} text-danger {% endif %}">
-                                    {% if book.status == 'available' %}
-                                        Available
+                                <td>{{ book.book.title }}</td>
+                                <td>{{ book.return_date }}</td>
+                                <td>{{ book.member.name }}</td>
+                                <td>{{ book.book.borrowing_fee }}</td>
+                                <td>{{ book.fine }}</td>
+                                <td class="{% if book.returned %} text-success {% else %} text-danger {% endif %}">
+                                    {% if book.returned %}
+                                        Returned
                                     {% else %}
-                                        Not Available
+                                        Not Returned
                                     {% endif %}
                                 </td>
+                                <!-- button to change status -->
                                 <td>
-                                    <a href="{% url 'update-book' book.pk %}" class="btn btn-primary">Edit</a>
+                                    <a href="{% url 'change-borrowed-book-status' book.pk %}" class="btn btn-success">Return</a>
                                 </td>
                                 <td>
-                                    <a href="{% url 'delete-book' book.pk %}" class="btn btn-danger">Remove</a>
+                                    <a href="" class="btn btn-primary">Edit</a>
+                                </td>
+                                <td>
+                                    <a href="" class="btn btn-danger">Remove</a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -65,4 +69,5 @@
         </div>
     </div>
 </div>
+
 {% endblock content %}
