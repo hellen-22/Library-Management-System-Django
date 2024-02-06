@@ -4,7 +4,7 @@ from .views import (
     AddBookView,
     AddMemberView,
     BooksListView,
-    ChangeBorrowedBookStatusView,
+    ChangeBorrowedBookStatusToReturnedView,
     DeleteBookView,
     DeleteMemberView,
     HomeView,
@@ -31,7 +31,7 @@ urlpatterns = [
     path("issued-books/", IssuedBooksListView.as_view(), name="issued-books"),
     path(
         "change-borrowed-book-status/<str:pk>/",
-        ChangeBorrowedBookStatusView.as_view(),
+        ChangeBorrowedBookStatusToReturnedView.as_view(),
         name="change-borrowed-book-status",
     ),
 ]

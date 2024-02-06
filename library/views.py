@@ -119,8 +119,16 @@ class IssueBookView(View):
         form = IssueBookForm(request.POST)
 
         if form.is_valid():
-            form.save()
-            return redirect("books")
+            issued_book = form.save(commit=False)
+            books_ids = request.POST.getlist("book")
+            for book_id in books_ids:
+                book = Book.objects.get(pk=book_id)
+
+                BorrowedBook.objects.create(
+                    member=issued_book.member, book=book, return_date=issued_book.return_date, fine=issued_book.fine
+                )
+
+            return redirect("issued-books")
 
         return render(request, "books/issue-book.html", {"form": form})
 
@@ -137,10 +145,14 @@ class IssueMemberBookView(View):
 
         if form.is_valid():
             lended_book = form.save(commit=False)
-            lended_book.member = member
-            lended_book.save()
+            book_ids = request.POST.getlist("book")
+            for book_id in book_ids:
+                book = Book.objects.get(pk=book_id)
+                BorrowedBook.objects.create(
+                    member=member, book=book, return_date=lended_book.return_date, fine=lended_book.fine
+                )
 
-            return redirect("members")
+            return redirect("issued-books")
 
         return render(request, "books/issue-member-book.html", {"form": form, "member": member})
 
@@ -151,7 +163,7 @@ class IssuedBooksListView(View):
         return render(request, "books/issued-books.html", {"books": books})
 
 
-class ChangeBorrowedBookStatusView(View):
+class ChangeBorrowedBookStatusToReturnedView(View):
     def get(self, request, *args, **kwargs):
         book = BorrowedBook.objects.get(pk=kwargs["pk"])
         book.returned = True

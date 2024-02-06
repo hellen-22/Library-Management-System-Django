@@ -74,12 +74,17 @@ class AddBookForm(forms.ModelForm):
 
 class IssueBookForm(forms.ModelForm):
     book = forms.ModelChoiceField(
+        label="Book / Books",
         queryset=Book.objects.filter(quantity__gt=0),
-        widget=forms.Select(attrs={"class": "form-control form-control-lg"}),
+        empty_label=None,
+        widget=forms.Select(
+            attrs={"class": "form-control form-control-lg js-example-basic-multiple w-100", "multiple": "multiple"}
+        ),
     )
 
     member = forms.ModelChoiceField(
         queryset=Member.objects.all(),
+        empty_label=None,
         widget=forms.Select(attrs={"class": "form-control form-control-lg js-example-basic-single w-100"}),
     )
 
@@ -99,7 +104,10 @@ class IssueBookForm(forms.ModelForm):
 class IssueMemberBookForm(forms.ModelForm):
     book = forms.ModelChoiceField(
         queryset=Book.objects.filter(quantity__gt=0),
-        widget=forms.Select(attrs={"class": "form-control form-control-lg"}),
+        empty_label=None,
+        widget=forms.Select(
+            attrs={"class": "form-control form-control-lg js-example-basic-multiple w-100", "multiple": "multiple"}
+        ),
     )
 
     return_date = forms.DateField(

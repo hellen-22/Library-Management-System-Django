@@ -19,16 +19,6 @@
           <form method="POST">
             {% csrf_token %}
             <div class="form-group">
-              <label>Single select box using select 2</label>
-              <select class="js-example-basic-single w-100">
-                <option value="AL">Alabama</option>
-                <option value="WY">Wyoming</option>
-                <option value="AM">America</option>
-                <option value="CA">Canada</option>
-                <option value="RU">Russia</option>
-              </select>
-            </div>
-            <div class="form-group">
               {{ form.book.label_tag }}
               {{ form.book }}
                 <div class="form-error">{{ form.book.errors }}</div>
