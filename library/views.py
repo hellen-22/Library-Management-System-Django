@@ -3,7 +3,14 @@ from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 
-from .forms import AddBookForm, AddMemberForm, IssueBookForm, IssueMemberBookForm, UpdateMemberForm
+from .forms import (
+    AddBookForm,
+    AddMemberForm,
+    IssueBookForm,
+    IssueMemberBookForm,
+    UpdateBorrowedBookForm,
+    UpdateMemberForm,
+)
 from .models import Book, BorrowedBook, Member
 
 
@@ -172,4 +179,30 @@ class ChangeBorrowedBookStatusToReturnedView(View):
         book = BorrowedBook.objects.get(pk=kwargs["pk"])
         book.returned = True
         book.save()
+        return redirect("issued-books")
+
+
+@method_decorator(login_required, name="dispatch")
+class UpdateBorrowedBookView(View):
+    def get(self, request, *args, **kwargs):
+        book = BorrowedBook.objects.get(pk=kwargs["pk"])
+        form = UpdateBorrowedBookForm(instance=book)
+        return render(request, "books/update-borrowed-book.html", {"form": form, "book": book})
+
+    def post(self, request, *args, **kwargs):
+        book = BorrowedBook.objects.get(pk=kwargs["pk"])
+        form = UpdateBorrowedBookForm(request.POST, instance=book)
+
+        if form.is_valid():
+            form.save()
+            return redirect("issued-books")
+
+        return render(request, "books/update-borrowed-book.html", {"form": form, "book": book})
+
+
+@method_decorator(login_required, name="dispatch")
+class DeleteBorrowedBookView(View):
+    def get(self, request, *args, **kwargs):
+        book = BorrowedBook.objects.get(pk=kwargs["pk"])
+        book.delete()
         return redirect("issued-books")

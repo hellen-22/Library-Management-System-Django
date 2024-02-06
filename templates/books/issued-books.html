@@ -55,10 +55,10 @@
                                     <a href="{% url 'change-borrowed-book-status' book.pk %}" class="btn btn-success">Return</a>
                                 </td>
                                 <td>
-                                    <a href="" class="btn btn-primary">Edit</a>
+                                    <a href="{% url 'edit-borrowed-book' book.pk %}" class="btn btn-primary">Edit</a>
                                 </td>
                                 <td>
-                                    <a href="" class="btn btn-danger">Remove</a>
+                                    <a href="{% url 'delete-borrowed-book' book.pk %}" class="btn btn-danger">Remove</a>
                                 </td>
                             </tr>
                         {% endfor %}

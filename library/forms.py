@@ -121,3 +121,17 @@ class IssueMemberBookForm(forms.ModelForm):
     class Meta:
         model = BorrowedBook
         fields = ["book", "return_date", "fine"]
+
+
+class UpdateBorrowedBookForm(forms.ModelForm):
+    return_date = forms.DateField(
+        widget=forms.DateInput(attrs={"class": "form-control form-control-lg", "type": "date"})
+    )
+
+    fine = forms.DecimalField(
+        widget=forms.NumberInput(attrs={"class": "form-control form-control-lg", "placeholder": "Enter Fine"})
+    )
+
+    class Meta:
+        model = BorrowedBook
+        fields = ["return_date", "fine"]

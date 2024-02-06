@@ -6,6 +6,7 @@ from .views import (
     BooksListView,
     ChangeBorrowedBookStatusToReturnedView,
     DeleteBookView,
+    DeleteBorrowedBookView,
     DeleteMemberView,
     HomeView,
     IssueBookView,
@@ -13,6 +14,7 @@ from .views import (
     IssueMemberBookView,
     MembersListView,
     UpdateBookDetailsView,
+    UpdateBorrowedBookView,
     UpdateMemberDetailsView,
 )
 
@@ -34,4 +36,6 @@ urlpatterns = [
         ChangeBorrowedBookStatusToReturnedView.as_view(),
         name="change-borrowed-book-status",
     ),
+    path("edit-borrowed-book/<str:pk>/", UpdateBorrowedBookView.as_view(), name="edit-borrowed-book"),
+    path("delete-borrowed-book/<str:pk>/", DeleteBorrowedBookView.as_view(), name="delete-borrowed-book"),
 ]
