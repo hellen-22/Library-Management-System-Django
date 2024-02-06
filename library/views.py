@@ -110,6 +110,7 @@ class DeleteBookView(View):
         return redirect("books")
 
 
+@method_decorator(login_required, name="dispatch")
 class IssueBookView(View):
     def get(self, request, *args, **kwargs):
         form = IssueBookForm()
@@ -133,6 +134,7 @@ class IssueBookView(View):
         return render(request, "books/issue-book.html", {"form": form})
 
 
+@method_decorator(login_required, name="dispatch")
 class IssueMemberBookView(View):
     def get(self, request, *args, **kwargs):
         member = Member.objects.get(pk=kwargs["pk"])
@@ -157,12 +159,14 @@ class IssueMemberBookView(View):
         return render(request, "books/issue-member-book.html", {"form": form, "member": member})
 
 
+@method_decorator(login_required, name="dispatch")
 class IssuedBooksListView(View):
     def get(self, request, *args, **kwargs):
         books = BorrowedBook.objects.all()
         return render(request, "books/issued-books.html", {"books": books})
 
 
+@method_decorator(login_required, name="dispatch")
 class ChangeBorrowedBookStatusToReturnedView(View):
     def get(self, request, *args, **kwargs):
         book = BorrowedBook.objects.get(pk=kwargs["pk"])
