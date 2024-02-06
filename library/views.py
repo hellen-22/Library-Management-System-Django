@@ -129,7 +129,7 @@ class IssueBookView(View):
         if form.is_valid():
             issued_book = form.save(commit=False)
             member = issued_book.member
-            
+
             books_ids = request.POST.getlist("book")
             for book_id in books_ids:
                 book = Book.objects.get(pk=book_id)
