@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 
@@ -128,17 +129,13 @@ class IssueBookView(View):
 
         if form.is_valid():
             issued_book = form.save(commit=False)
-            member = issued_book.member
 
             books_ids = request.POST.getlist("book")
             for book_id in books_ids:
                 book = Book.objects.get(pk=book_id)
                 BorrowedBook.objects.create(
-                    member=member, book=book, return_date=issued_book.return_date, fine=issued_book.fine
+                    member=issued_book.member, book=book, return_date=issued_book.return_date, fine=issued_book.fine
                 )
-
-                member.amount_due += book.borrowing_fee
-                member.save()
 
             return redirect("issued-books")
 
@@ -165,9 +162,6 @@ class IssueMemberBookView(View):
                     member=member, book=book, return_date=lended_book.return_date, fine=lended_book.fine
                 )
 
-                member.amount_due += book.borrowing_fee
-                member.save()
-
             return redirect("issued-books")
 
         return render(request, "books/issue-member-book.html", {"form": form, "member": member})
@@ -178,15 +172,6 @@ class IssuedBooksListView(View):
     def get(self, request, *args, **kwargs):
         books = BorrowedBook.objects.all()
         return render(request, "books/issued-books.html", {"books": books})
-
-
-@method_decorator(login_required, name="dispatch")
-class ChangeBorrowedBookStatusToReturnedView(View):
-    def get(self, request, *args, **kwargs):
-        book = BorrowedBook.objects.get(pk=kwargs["pk"])
-        book.returned = True
-        book.save()
-        return redirect("issued-books")
 
 
 @method_decorator(login_required, name="dispatch")
@@ -212,4 +197,29 @@ class DeleteBorrowedBookView(View):
     def get(self, request, *args, **kwargs):
         book = BorrowedBook.objects.get(pk=kwargs["pk"])
         book.delete()
+        return redirect("issued-books")
+
+
+class ReturnBookView(View):
+    def get(self, request, *args, **kwargs):
+        book = BorrowedBook.objects.get(pk=kwargs["pk"])
+        if book.return_date < timezone.now().date():
+            return redirect("return-book-fine", pk=book.pk)
+
+        else:
+            book.returned = True
+            book.save()
+            return redirect("issued-books")
+
+
+class ReturnBookFineView(View):
+    def get(self, request, *args, **kwargs):
+        book = BorrowedBook.objects.get(pk=kwargs["pk"])
+        return render(request, "books/return-book-fine.html", {"book": book})
+
+    def post(self, request, *args, **kwargs):
+        book = BorrowedBook.objects.get(pk=kwargs["pk"])
+        book.returned = True
+        book.save()
+
         return redirect("issued-books")

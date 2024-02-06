@@ -28,7 +28,6 @@
                         <th>Title</th>
                         <th>Return Date</th>
                         <th>Member</th>
-                        <th>Borrowing Fee</th>
                         <th>Fine</th>
                         <th>Status</th>
                         <th colspan="3">Actions</th>
@@ -41,7 +40,6 @@
                                 <td>{{ book.book.title }}</td>
                                 <td>{{ book.return_date }}</td>
                                 <td>{{ book.member.name }}</td>
-                                <td>{{ book.book.borrowing_fee }}</td>
                                 <td>{{ book.fine }}</td>
                                 <td class="{% if book.returned %} text-success {% else %} text-danger {% endif %}">
                                     {% if book.returned %}
@@ -52,7 +50,7 @@
                                 </td>
                                 <!-- button to change status -->
                                 <td>
-                                    <a href="{% url 'change-borrowed-book-status' book.pk %}" class="btn btn-success">Return</a>
+                                    <a href="{% url 'return-book' book.pk %}" class="btn {% if book.returned %} disabled btn-light {% else %} btn-success{% endif %}">{% if book.returned %}Returned{% else %} Return {% endif %}</a>
                                 </td>
                                 <td>
                                     <a href="{% url 'edit-borrowed-book' book.pk %}" class="btn btn-primary">Edit</a>
