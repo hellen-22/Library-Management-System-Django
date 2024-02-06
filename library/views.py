@@ -128,13 +128,17 @@ class IssueBookView(View):
 
         if form.is_valid():
             issued_book = form.save(commit=False)
+            member = issued_book.member
+            
             books_ids = request.POST.getlist("book")
             for book_id in books_ids:
                 book = Book.objects.get(pk=book_id)
-
                 BorrowedBook.objects.create(
-                    member=issued_book.member, book=book, return_date=issued_book.return_date, fine=issued_book.fine
+                    member=member, book=book, return_date=issued_book.return_date, fine=issued_book.fine
                 )
+
+                member.amount_due += book.borrowing_fee
+                member.save()
 
             return redirect("issued-books")
 
@@ -160,6 +164,9 @@ class IssueMemberBookView(View):
                 BorrowedBook.objects.create(
                     member=member, book=book, return_date=lended_book.return_date, fine=lended_book.fine
                 )
+
+                member.amount_due += book.borrowing_fee
+                member.save()
 
             return redirect("issued-books")
 
