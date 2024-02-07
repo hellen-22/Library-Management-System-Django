@@ -154,15 +154,18 @@ class IssueMemberBookView(View):
         form = IssueMemberBookForm(request.POST)
 
         if form.is_valid():
-            lended_book = form.save(commit=False)
-            book_ids = request.POST.getlist("book")
-            for book_id in book_ids:
-                book = Book.objects.get(pk=book_id)
-                BorrowedBook.objects.create(
-                    member=member, book=book, return_date=lended_book.return_date, fine=lended_book.fine
-                )
+            if member.amount_due > 500:
+                form.add_error(None, "Member has exceeded the borrowing limit.")
+            else:
+                lended_book = form.save(commit=False)
+                book_ids = request.POST.getlist("book")
+                for book_id in book_ids:
+                    book = Book.objects.get(pk=book_id)
+                    BorrowedBook.objects.create(
+                        member=member, book=book, return_date=lended_book.return_date, fine=lended_book.fine
+                    )
 
-            return redirect("issued-books")
+                return redirect("issued-books")
 
         return render(request, "books/issue-member-book.html", {"form": form, "member": member})
 
