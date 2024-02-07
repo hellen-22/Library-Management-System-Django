@@ -507,6 +507,13 @@
     }
     $(".form")[0].reset(); // this is to reset the form
   </script>
+  <script>
+    // Disable past dates in the date picker
+    $(document).ready(function(){
+        var today = new Date().toISOString().split('T')[0];
+        $("#return-date").attr('min', today);
+    });
+</script>
 </body>
 
 </html>

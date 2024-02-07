@@ -89,7 +89,7 @@ class IssueBookForm(forms.ModelForm):
     )
 
     return_date = forms.DateField(
-        widget=forms.DateInput(attrs={"class": "form-control form-control-lg", "type": "date"})
+        widget=forms.DateInput(attrs={"class": "form-control form-control-lg", "type": "date", "id": "return-date"})
     )
 
     fine = forms.DecimalField(
@@ -100,12 +100,11 @@ class IssueBookForm(forms.ModelForm):
         model = BorrowedBook
         fields = ["book", "member", "return_date", "fine"]
 
-    
     def clean_member(self):
         member = self.cleaned_data.get("member")
         if member.amount_due >= 500:
             raise ValidationError(_("Member has exceeded the borrowing limit."))
-        
+
         return member
 
 
@@ -119,7 +118,7 @@ class IssueMemberBookForm(forms.ModelForm):
     )
 
     return_date = forms.DateField(
-        widget=forms.DateInput(attrs={"class": "form-control form-control-lg", "type": "date"})
+        widget=forms.DateInput(attrs={"class": "form-control form-control-lg", "type": "date", "id": "return-date"})
     )
 
     fine = forms.DecimalField(
@@ -133,7 +132,7 @@ class IssueMemberBookForm(forms.ModelForm):
 
 class UpdateBorrowedBookForm(forms.ModelForm):
     return_date = forms.DateField(
-        widget=forms.DateInput(attrs={"class": "form-control form-control-lg", "type": "date"})
+        widget=forms.DateInput(attrs={"class": "form-control form-control-lg", "type": "date", "id": "return-date"})
     )
 
     fine = forms.DecimalField(
