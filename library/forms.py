@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from .models import CATEGORY_CHOICES, Book, BorrowedBook, Member
+from .models import CATEGORY_CHOICES, PAYMENT_METHOD_CHOICES, Book, BorrowedBook, Member
 
 
 class AddMemberForm(forms.ModelForm):
@@ -100,9 +100,10 @@ class IssueBookForm(forms.ModelForm):
         model = BorrowedBook
         fields = ["book", "member", "return_date", "fine"]
 
-    def clean_member(self):
+    def clean(self):
         member = self.cleaned_data.get("member")
-        if member.amount_due >= 500:
+        amount_due = member.amount_due + self.cleaned_data.get("fine")
+        if amount_due >= 500:
             raise ValidationError(_("Member has exceeded the borrowing limit."))
 
         return member
@@ -142,3 +143,12 @@ class UpdateBorrowedBookForm(forms.ModelForm):
     class Meta:
         model = BorrowedBook
         fields = ["return_date", "fine"]
+
+
+class PaymentForm(forms.Form):
+    payment_method = forms.ChoiceField(
+        choices=PAYMENT_METHOD_CHOICES, widget=forms.Select(attrs={"class": "form-control form-control-lg"})
+    )
+
+    class Meta:
+        fields = ["payment_method"]

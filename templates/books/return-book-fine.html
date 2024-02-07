@@ -19,13 +19,13 @@
           <form method="POST">
             {% csrf_token %}
             <div class="form-group">
-              {{ form.title.label_tag }}
-              {{ form.title }}
-                <div class="form-error">{{ form.title.errors }}</div>
+              {{ form.payment_method.label_tag }}
+              {{ form.payment_method }}
+                  <div class="form-error">{{ form.payment_method.errors }}</div>
             </div>
 
             <button type="submit" class="btn btn-primary btn-md me-2">Pay</button>
-            <a class="btn btn-light" href="{% url 'books' %}">Cancel</a>
+            <a class="btn btn-light" href="{% url 'issued-books' %}">Cancel</a>
           </form>
         </div>
       </div>

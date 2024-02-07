@@ -40,8 +40,15 @@
                     <div class="form-error">{{ form.fine.errors }}</div>
             </div>
 
+            <div class="form-group">
+              {{ payment_form.payment_method.label_tag }}
+              {{ payment_form.payment_method }}
+                  <div class="form-error">{{ payment_form.payment_method.errors }}</div>
+            </div>
+
+
             <button type="submit" class="btn btn-primary btn-md me-2">Issue</button>
-            <button class="btn btn-light">Cancel</button>
+            <a href="{% url 'issued-books' %}" class="btn btn-light">Cancel</a>
           </form>
         </div>
       </div>
