@@ -222,7 +222,7 @@ class DeleteBorrowedBookView(View):
         book.delete()
         return redirect("issued-books")
 
-
+@method_decorator(login_required, name="dispatch")
 class ReturnBookView(View):
     def get(self, request, *args, **kwargs):
         book = BorrowedBook.objects.get(pk=kwargs["pk"])
@@ -234,7 +234,7 @@ class ReturnBookView(View):
             book.save()
             return redirect("issued-books")
 
-
+@method_decorator(login_required, name="dispatch")
 class ReturnBookFineView(View):
     def get(self, request, *args, **kwargs):
         form = PaymentForm()
