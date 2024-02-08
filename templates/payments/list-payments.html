@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Add Member{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-header">
+                <div class="col-5">
+                  <h5 class="card-title mt-4">PAYMENTS LIST</h5>
+                </div>
+
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Index</th>
+                        <th>Paid By</th>
+                        <th>Payment Method</th>
+                        <th>Amount</th>
+                        <th colspan="3">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ payment.member.name }}</td>
+                                <td>{{ payment.payment_method }}</td>
+                                <td>{{ payment.amount }}</td>
+                                <td>
+                                    <a href="{% url 'delete-payment' payment.pk %}" class="btn btn-danger">Remove</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

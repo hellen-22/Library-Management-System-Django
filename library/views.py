@@ -222,6 +222,7 @@ class DeleteBorrowedBookView(View):
         book.delete()
         return redirect("issued-books")
 
+
 @method_decorator(login_required, name="dispatch")
 class ReturnBookView(View):
     def get(self, request, *args, **kwargs):
@@ -233,6 +234,7 @@ class ReturnBookView(View):
             book.returned = True
             book.save()
             return redirect("issued-books")
+
 
 @method_decorator(login_required, name="dispatch")
 class ReturnBookFineView(View):
@@ -257,3 +259,16 @@ class ReturnBookFineView(View):
             return redirect("issued-books")
 
         return render(request, "books/return-book-fine.html", {"book": book, "form": form})
+
+
+class ListPaymentsView(View):
+    def get(self, request, *args, **kwargs):
+        payments = Transaction.objects.all()
+        return render(request, "payments/list-payments.html", {"payments": payments})
+
+
+class DeletePaymentView(View):
+    def get(self, request, *args, **kwargs):
+        payment = Transaction.objects.get(pk=kwargs["pk"])
+        payment.delete()
+        return redirect("payments")

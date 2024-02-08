@@ -410,7 +410,7 @@
     <li class="nav-item nav-category">Users</li>
     <li class="nav-item">
       <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-        <i class="menu-icon mdi mdi-floor-plan"></i>
+        <i class="menu-icon mdi mdi-account-multiple"></i>
         <span class="menu-title">Members</span>
         <i class="menu-arrow"></i>
       </a>
@@ -425,7 +425,7 @@
     <li class="nav-item">
       <a class="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false"
         aria-controls="form-elements">
-        <i class="menu-icon mdi mdi-card-text-outline"></i>
+        <i class="menu-icon mdi mdi-book-multiple"></i>
         <span class="menu-title">Books</span>
         <i class="menu-arrow"></i>
       </a>
@@ -437,10 +437,23 @@
         </ul>
       </div>
     </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="collapse" href="#payments" aria-expanded="false"
+        aria-controls="payments">
+        <i class="menu-icon mdi mdi-credit-card-multiple"></i>
+        <span class="menu-title">Payments</span>
+        <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse" id="payments">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item"><a class="nav-link" href="{% url 'payments' %}">View Payments</a></li>
+        </ul>
+      </div>
+    </li>
     <li class="nav-item nav-category">Activities</li>
     <li class="nav-item">
       <a class="nav-link" data-bs-toggle="collapse" href="{% url 'logout' %}" aria-expanded="false" aria-controls="auth">
-        <i class="menu-icon mdi mdi-account-circle-outline"></i>
+        <i class="menu-icon mdi mdi-account-circle"></i>
         <span class="menu-title">Logout</span>
         <i class="menu-arrow"></i>
       </a>
