@@ -15,7 +15,7 @@ from .forms import (
 )
 from .models import Book, BorrowedBook, Member, Transaction
 
-
+@method_decorator(login_required, name="dispatch")
 class HomeView(View):
     def get(self, request, *args, **kwargs):
         return render(request, "base.html")
@@ -260,13 +260,13 @@ class ReturnBookFineView(View):
 
         return render(request, "books/return-book-fine.html", {"book": book, "form": form})
 
-
+@method_decorator(login_required, name="dispatch")
 class ListPaymentsView(View):
     def get(self, request, *args, **kwargs):
         payments = Transaction.objects.all()
         return render(request, "payments/list-payments.html", {"payments": payments})
 
-
+@method_decorator(login_required, name="dispatch")
 class DeletePaymentView(View):
     def get(self, request, *args, **kwargs):
         payment = Transaction.objects.get(pk=kwargs["pk"])
