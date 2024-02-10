@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.utils import timezone
@@ -14,6 +16,9 @@ from .forms import (
     UpdateMemberForm,
 )
 from .models import Book, BorrowedBook, Member, Transaction
+
+logger = logging.getLogger(__name__)
+
 
 @method_decorator(login_required, name="dispatch")
 class HomeView(View):
@@ -32,7 +37,10 @@ class AddMemberView(View):
 
         if form.is_valid():
             form.save()
+            logger.info("New member added successfully.")
             return redirect("members")
+
+        logger.error(f"Error occurred while adding member: {form.errors}")
 
         return render(request, "members/add-member.html", {"form": form})
 
@@ -57,7 +65,10 @@ class UpdateMemberDetailsView(View):
 
         if form.is_valid():
             form.save()
+            logger.info("Member details updated successfully.")
             return redirect("members")
+
+        logger.error(f"Error occurred while updating member: {form.errors}")
 
         return render(request, "members/update-member.html", {"form": form, "member": member})
 
@@ -67,6 +78,7 @@ class DeleteMemberView(View):
     def get(self, request, *args, **kwargs):
         member = Member.objects.get(pk=kwargs["pk"])
         member.delete()
+        logger.info("Member deleted successfully.")
         return redirect("members")
 
 
@@ -81,7 +93,10 @@ class AddBookView(View):
 
         if form.is_valid():
             form.save()
+            logger.info("New book added successfully.")
             return redirect("books")
+
+        logger.error(f"Error occurred while adding book: {form.errors}")
 
         return render(request, "books/add-book.html", {"form": form})
 
@@ -106,7 +121,10 @@ class UpdateBookDetailsView(View):
 
         if form.is_valid():
             form.save()
+            logger.info("Book details updated successfully.")
             return redirect("books")
+
+        logger.error(f"Error occurred while updating book: {form.errors}")
 
         return render(request, "books/update-book.html", {"form": form, "book": book})
 
@@ -116,6 +134,7 @@ class DeleteBookView(View):
     def get(self, request, *args, **kwargs):
         book = Book.objects.get(pk=kwargs["pk"])
         book.delete()
+        logger.info("Book deleted successfully.")
         return redirect("books")
 
 
@@ -141,11 +160,15 @@ class IssueBookView(View):
                 BorrowedBook.objects.create(
                     member=issued_book.member, book=book, return_date=issued_book.return_date, fine=issued_book.fine
                 )
+                logger.info("Book issued successfully.")
                 amount += book.borrowing_fee
 
             Transaction.objects.create(member=issued_book.member, amount=amount, payment_method=payment_method)
+            logger.info("Payment made successfully.")
 
             return redirect("issued-books")
+
+        logger.error(f"Error occurred while issuing book: {form.errors}")
 
         return render(request, "books/issue-book.html", {"form": form, "payment_form": payment_form})
 
@@ -168,6 +191,7 @@ class IssueMemberBookView(View):
         if form.is_valid() and payment_form.is_valid():
             if member.amount_due > 500:
                 form.add_error(None, "Member has exceeded the borrowing limit.")
+                logger.error("Member has exceeded the borrowing limit.")
             else:
                 lended_book = form.save(commit=False)
                 payment_method = payment_form.cleaned_data["payment_method"]
@@ -178,12 +202,15 @@ class IssueMemberBookView(View):
                     BorrowedBook.objects.create(
                         member=member, book=book, return_date=lended_book.return_date, fine=lended_book.fine
                     )
-
+                    logger.info("Book issued successfully.")
                     amount += book.borrowing_fee
 
                 Transaction.objects.create(member=member, amount=amount, payment_method=payment_method)
+                logger.info("Payment made successfully.")
 
                 return redirect("issued-books")
+
+        logger.error(f"Error occurred while issuing book: {form.errors}")
 
         return render(
             request, "books/issue-member-book.html", {"form": form, "payment_form": payment_form, "member": member}
@@ -210,7 +237,9 @@ class UpdateBorrowedBookView(View):
 
         if form.is_valid():
             form.save()
+            logger.info("Borrowed book details updated successfully.")
             return redirect("issued-books")
+        logger.error(f"Error occurred while updating borrowed book: {form.errors}")
 
         return render(request, "books/update-borrowed-book.html", {"form": form, "book": book})
 
@@ -220,6 +249,7 @@ class DeleteBorrowedBookView(View):
     def get(self, request, *args, **kwargs):
         book = BorrowedBook.objects.get(pk=kwargs["pk"])
         book.delete()
+        logger.info("Borrowed book deleted successfully.")
         return redirect("issued-books")
 
 
@@ -253,12 +283,15 @@ class ReturnBookFineView(View):
 
             book.returned = True
             book.save()
+            logger.info("Book returned successfully.")
 
             Transaction.objects.create(member=book.member, amount=fine, payment_method=payment_method)
 
             return redirect("issued-books")
+        logger.error(f"Error occurred while returning book: {form.errors}")
 
         return render(request, "books/return-book-fine.html", {"book": book, "form": form})
+
 
 @method_decorator(login_required, name="dispatch")
 class ListPaymentsView(View):
@@ -266,9 +299,11 @@ class ListPaymentsView(View):
         payments = Transaction.objects.all()
         return render(request, "payments/list-payments.html", {"payments": payments})
 
+
 @method_decorator(login_required, name="dispatch")
 class DeletePaymentView(View):
     def get(self, request, *args, **kwargs):
         payment = Transaction.objects.get(pk=kwargs["pk"])
         payment.delete()
+        logger.info("Payment deleted successfully.")
         return redirect("payments")

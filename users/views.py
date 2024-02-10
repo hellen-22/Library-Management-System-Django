@@ -1,8 +1,12 @@
+import logging
+
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, render
 from django.views.generic import View
 
 from .forms import LoginForm, RegisterForm
+
+logger = logging.getLogger(__name__)
 
 
 class LoginView(View):
@@ -21,12 +25,14 @@ class LoginView(View):
 
             if user is not None:
                 login(request, user)
-
+                logger.info(f"User {user.email} logged in")
                 redirect_url = request.GET.get("next", "home")
 
                 return redirect(redirect_url)
-
+            logger.warning(f"Invalid login attempt for {email}")
             form.add_error(None, "Invalid email or password")
+
+        logger.warning(f"Invalid login attempt: {form.errors}")
 
         return render(request, "users/login.html", {"form": form})
 
@@ -46,7 +52,10 @@ class RegisterView(View):
             user.set_password(password)
             user.save()
 
+            logger.info(f"User {user.email} registered")
+
             return redirect("login")
+        logger.warning(f"Invalid registration attempt: {form.errors}")
 
         return render(request, "users/register.html", {"form": form})
 
@@ -54,4 +63,5 @@ class RegisterView(View):
 class LogoutView(View):
     def get(self, request, *args, **kwargs):
         logout(request)
+        logger.info("User logged out")
         return redirect("login")
