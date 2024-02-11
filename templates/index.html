@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block title %}Add Member{% endblock %}
+{% block content %}
+<style>
+    .stats {
+        text-decoration: none;
+    }
+</style>
+<div class="row">
+    <div class="col-sm-12">
+      <div class="home-tab">
+        <div class="tab-content tab-content-basic">
+            <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="statistics-details d-flex align-items-center justify-content-between row">
+
+
+                    <div class="col">
+                      <p class="statistics-title">Members</p>
+                      <a href="{% url 'members' %}" class="stats"><h3 class="rate-percentage">{{ total_members }}</h3></a>
+                    </div>
+                    <div class="col">
+                      <p class="statistics-title">Books</p>
+                      <a href="{% url 'books' %}" class="stats"><h3 class="rate-percentage">{{ total_books }}</h3></a>
+                    </div>
+                    <div class="col">
+                      <p class="statistics-title">Borrowed Books</p>
+                      <a href="{% url 'issued-books' %}" class="stats"><h3 class="rate-percentage">{{ total_borrowed_books }}</h3></a>
+                    </div>
+                    <div class="col">
+                      <p class="statistics-title">Overdue Books</p>
+                      <a href="{% url 'overdue-books' %}" class="stats"><h3 class="rate-percentage">{{ total_overdue_books }}</h3></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-8 d-flex flex-column">
+                    <div class="row flex-grow">
+                      <div class="col-12 col-lg-4 col-lg-12 grid-margin stretch-card">
+                        <div class="card card-rounded">
+                          <div class="card-body">
+                            <div class="d-sm-flex justify-content-between align-items-start">
+                              <div>
+                               <h4 class="card-title card-title-dash">Recently Added Books</h4>
+                              </div>
+                            </div>
+                            <div class="table-responsive ">
+                              <table class="table select-table">
+                                <thead>
+                                  <tr>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Category</th>
+                                    <th>Quantity</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {% for book in recently_added_books %}
+                                    <tr>
+                                      <td>{{ book.title }}</td>
+                                      <td>{{ book.author }}</td>
+                                      <td>{{ book.category }}</td>
+                                      <td>{{ book.quantity }}</td>
+                                    </tr>
+                                  {% endfor %}
+                                </tbody>
+                                </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <div class="col-lg-4 d-flex flex-column">
+                  <div class="row flex-grow">
+                    <div class="col-md-6 col-lg-12 grid-margin stretch-card">
+                      <div class="card bg-primary card-rounded">
+                        <div class="card-body pb-0">
+                          <h4 class="card-title card-title-dash text-white mb-4">Amount</h4>
+                          <div class="row">
+                            <div class="col-sm-8">
+                              <p class="status-summary-ight-white mb-1">Total amount</p>
+                              <h2 class="text-info">Ksh {{total_amount}}</h2>
+                            </div>
+                            <div class="col-sm-4">
+                              <div class="status-summary-chart-wrapper pb-4">
+                                <canvas id="status-summary"></canvas>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row flex-grow">
+                    <div class="col-md-6 col-lg-12 grid-margin stretch-card">
+                      <div class="card bg-primary card-rounded">
+                        <div class="card-body pb-0">
+                          <h4 class="card-title card-title-dash text-white">Overdue Amount</h4>
+
+                              <h2 class="text-info mb-4">Ksh {{overdue_amount}}</h2>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock content %}

@@ -23,7 +23,32 @@ logger = logging.getLogger(__name__)
 @method_decorator(login_required, name="dispatch")
 class HomeView(View):
     def get(self, request, *args, **kwargs):
-        return render(request, "base.html")
+        members = Member.objects.all()
+        books = Book.objects.all()
+        borrowed_books = BorrowedBook.objects.filter(returned=False)
+        overdue_books = BorrowedBook.objects.filter(return_date__lt=timezone.now().date(), returned=False)
+
+        total_members = members.count()
+        total_books = books.count()
+        total_borrowed_books = borrowed_books.count()
+        total_overdue_books = overdue_books.count()
+
+        recently_added_books = books.order_by("-created_at")[:4]
+
+        total_amount = sum([payment.amount for payment in Transaction.objects.all()])
+        overdue_amount = sum([book.fine for book in overdue_books])
+
+        context = {
+            "total_members": total_members,
+            "total_books": total_books,
+            "total_borrowed_books": total_borrowed_books,
+            "total_overdue_books": total_overdue_books,
+            "recently_added_books": recently_added_books,
+            "total_amount": total_amount,
+            "overdue_amount": overdue_amount,
+        }
+
+        return render(request, "index.html", context)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -333,3 +358,9 @@ class DeletePaymentView(View):
         payment.delete()
         logger.info("Payment deleted successfully.")
         return redirect("payments")
+
+
+class OverdueBooksView(View):
+    def get(self, request, *args, **kwargs):
+        overdue_books = BorrowedBook.objects.filter(return_date__lt=timezone.now().date(), returned=False)
+        return render(request, "books/overdue-books.html", {"books": overdue_books})

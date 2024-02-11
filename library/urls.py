@@ -14,6 +14,7 @@ from .views import (
     IssueMemberBookView,
     ListPaymentsView,
     MembersListView,
+    OverdueBooksView,
     ReturnBookFineView,
     ReturnBookView,
     UpdateBookDetailsView,
@@ -40,4 +41,5 @@ urlpatterns = [
     path("return-book-fine/<str:pk>/", ReturnBookFineView.as_view(), name="return-book-fine"),
     path("payments/", ListPaymentsView.as_view(), name="payments"),
     path("delete-payment/<str:pk>/", DeletePaymentView.as_view(), name="delete-payment"),
+    path("overdue-books/", OverdueBooksView.as_view(), name="overdue-books"),
 ]
