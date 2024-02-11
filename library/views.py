@@ -220,7 +220,7 @@ class IssueMemberBookView(View):
 @method_decorator(login_required, name="dispatch")
 class IssuedBooksListView(View):
     def get(self, request, *args, **kwargs):
-        books = BorrowedBook.objects.all()
+        books = BorrowedBook.objects.select_related("member", "book")
         return render(request, "books/issued-books.html", {"books": books})
 
 
@@ -296,7 +296,7 @@ class ReturnBookFineView(View):
 @method_decorator(login_required, name="dispatch")
 class ListPaymentsView(View):
     def get(self, request, *args, **kwargs):
-        payments = Transaction.objects.all()
+        payments = Transaction.objects.select_related("member")
         return render(request, "payments/list-payments.html", {"payments": payments})
 
 
