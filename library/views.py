@@ -152,21 +152,33 @@ class IssueBookView(View):
 
         if form.is_valid() and payment_form.is_valid():
             issued_book = form.save(commit=False)
-            payment_method = payment_form.cleaned_data["payment_method"]
-            books_ids = request.POST.getlist("book")
-            amount = 0
-            for book_id in books_ids:
-                book = Book.objects.get(pk=book_id)
-                BorrowedBook.objects.create(
-                    member=issued_book.member, book=book, return_date=issued_book.return_date, fine=issued_book.fine
-                )
-                logger.info("Book issued successfully.")
-                amount += book.borrowing_fee
+            if issued_book.member.amount_due > 500:
+                form.add_error(None, "Member has exceeded the borrowing limit.")
+                logger.error("Member has exceeded the borrowing limit.")
+            else:
+                payment_method = payment_form.cleaned_data["payment_method"]
+                books_ids = request.POST.getlist("book")
+                amount = 0
+                for book_id in books_ids:
+                    book = Book.objects.get(pk=book_id)
+                    BorrowedBook.objects.create(
+                        member=issued_book.member,
+                        book=book,
+                        return_date=issued_book.return_date,
+                        fine=issued_book.fine,
+                    )
+                    logger.info("Book issued successfully.")
 
-            Transaction.objects.create(member=issued_book.member, amount=amount, payment_method=payment_method)
-            logger.info("Payment made successfully.")
+                    book.quantity -= 1
+                    book.save()
+                    logger.info("Book Quantity updated successfully.")
 
-            return redirect("issued-books")
+                    amount += book.borrowing_fee
+
+                Transaction.objects.create(member=issued_book.member, amount=amount, payment_method=payment_method)
+                logger.info("Payment made successfully.")
+
+                return redirect("issued-books")
 
         logger.error(f"Error occurred while issuing book: {form.errors}")
 
@@ -203,6 +215,10 @@ class IssueMemberBookView(View):
                         member=member, book=book, return_date=lended_book.return_date, fine=lended_book.fine
                     )
                     logger.info("Book issued successfully.")
+
+                    book.quantity -= 1
+                    book.save()
+
                     amount += book.borrowing_fee
 
                 Transaction.objects.create(member=member, amount=amount, payment_method=payment_method)
@@ -262,7 +278,13 @@ class ReturnBookView(View):
 
         else:
             book.returned = True
+            book.book.save()
+            logger.info("Book returned successfully.")
+
+            book.book.quantity += 1
             book.save()
+            logger.info("Book Quantity updated successfully.")
+
             return redirect("issued-books")
 
 
@@ -284,6 +306,10 @@ class ReturnBookFineView(View):
             book.returned = True
             book.save()
             logger.info("Book returned successfully.")
+
+            book.book.quantity += 1
+            book.book.save()
+            logger.info("Book Quantity updated successfully.")
 
             Transaction.objects.create(member=book.member, amount=fine, payment_method=payment_method)
 

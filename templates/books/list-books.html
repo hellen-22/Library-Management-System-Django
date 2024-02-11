@@ -31,6 +31,7 @@
                         <th>Author</th>
                         <th>Category</th>
                         <th>Borrowing Fee</th>
+                        <th>Available Quantity</th>
                         <th>Status</th>
                         <th colspan="3">Actions</th>
                     </tr>
@@ -43,6 +44,7 @@
                                 <td>{{ book.author }}</td>
                                 <td>{{ book.category }}</td>
                                 <td>{{ book.borrowing_fee }}</td>
+                                <td>{{ book.quantity }}</td>
                                 <td class="{% if book.status == 'available' %} text-success {% else %} text-danger {% endif %}">
                                     {% if book.status == 'available' %}
                                         Available

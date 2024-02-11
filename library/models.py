@@ -1,4 +1,4 @@
-from django.core.validators import MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 from users.models import AbstractBaseModel
@@ -32,7 +32,7 @@ class Member(AbstractBaseModel):
     name = models.CharField(max_length=100)
     email = models.EmailField()
     amount_due = models.DecimalField(
-        max_digits=10, decimal_places=2, default=0.00, validators=[MinValueValidator(0.00)]
+        max_digits=10, decimal_places=2, default=0.00, validators=[MinValueValidator(0.00), MaxValueValidator(500.00)]
     )
 
     def __str__(self):

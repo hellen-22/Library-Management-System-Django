@@ -100,14 +100,6 @@ class IssueBookForm(forms.ModelForm):
         model = BorrowedBook
         fields = ["book", "member", "return_date", "fine"]
 
-    def clean(self):
-        member = self.cleaned_data.get("member")
-        amount_due = member.amount_due + self.cleaned_data.get("fine")
-        if amount_due >= 500:
-            raise ValidationError(_("Member has exceeded the borrowing limit."))
-
-        return member
-
 
 class IssueMemberBookForm(forms.ModelForm):
     book = forms.ModelChoiceField(
