@@ -41,10 +41,20 @@ class TestListBooksView(TestCase):
     def setUp(self):
         self.user = Librarian.objects.create_user(email="test@gmail.com", password="password")
         self.book = Book.objects.create(
-            title="Test Title", author="Test Author", category="fiction", quantity=10, borrowing_fee=1.00, status="available"
+            title="Test Title",
+            author="Test Author",
+            category="fiction",
+            quantity=10,
+            borrowing_fee=1.00,
+            status="available",
         )
         self.book2 = Book.objects.create(
-            title="Test Title 2", author="Test Author 2", category="non-fiction", quantity=5, borrowing_fee=2.00, status="available"
+            title="Test Title 2",
+            author="Test Author 2",
+            category="non-fiction",
+            quantity=5,
+            borrowing_fee=2.00,
+            status="available",
         )
 
     def test_login_required(self):
@@ -60,20 +70,33 @@ class TestListBooksView(TestCase):
         self.assertContains(response, "Test Title 2")
         self.assertEqual(Book.objects.count(), 2)
 
+
 class TestUpdateBookView(TestCase):
     def setUp(self):
         self.user = Librarian.objects.create_user(email="test@gmail.com", password="password")
         self.book = Book.objects.create(
-            title="Test Title", author="Test Author", category="fiction", quantity=10, borrowing_fee=1.00, status="available"
+            title="Test Title",
+            author="Test Author",
+            category="fiction",
+            quantity=10,
+            borrowing_fee=1.00,
+            status="available",
         )
         self.book2 = Book.objects.create(
-            title="Test Title 2", author="Test Author 2", category="non-fiction", quantity=5, borrowing_fee=2.00, status="available"
+            title="Test Title 2",
+            author="Test Author 2",
+            category="non-fiction",
+            quantity=5,
+            borrowing_fee=2.00,
+            status="available",
         )
 
     def test_login_required(self):
         response = self.client.post(reverse("update-book", kwargs={"pk": self.book.pk}))
 
-        self.assertRedirects(response, f"{reverse('login')}?next={reverse('update-book', kwargs={'pk': self.book.pk})}")
+        self.assertRedirects(
+            response, f"{reverse('login')}?next={reverse('update-book', kwargs={'pk': self.book.pk})}"
+        )
         self.assertEqual(self.book.title, "Test Title")
 
     def test_valid_data_updates_book(self):
@@ -105,16 +128,28 @@ class TestDeleteBookView(TestCase):
     def setUp(self):
         self.user = Librarian.objects.create_user(email="test@gmail.com", password="password")
         self.book = Book.objects.create(
-            title="Test Title", author="Test Author", category="fiction", quantity=10, borrowing_fee=1.00, status="available"
+            title="Test Title",
+            author="Test Author",
+            category="fiction",
+            quantity=10,
+            borrowing_fee=1.00,
+            status="available",
         )
         self.book2 = Book.objects.create(
-            title="Test Title 2", author="Test Author 2", category="non-fiction", quantity=5, borrowing_fee=2.00, status="available"
+            title="Test Title 2",
+            author="Test Author 2",
+            category="non-fiction",
+            quantity=5,
+            borrowing_fee=2.00,
+            status="available",
         )
 
     def test_login_required(self):
         response = self.client.post(reverse("delete-book", kwargs={"pk": self.book.pk}))
 
-        self.assertRedirects(response, f"{reverse('login')}?next={reverse('delete-book', kwargs={'pk': self.book.pk})}")
+        self.assertRedirects(
+            response, f"{reverse('login')}?next={reverse('delete-book', kwargs={'pk': self.book.pk})}"
+        )
         self.assertEqual(Book.objects.count(), 2)
 
     def test_delete_book(self):
@@ -123,5 +158,3 @@ class TestDeleteBookView(TestCase):
 
         self.assertEqual(Book.objects.count(), 1)
         self.assertFalse(Book.objects.filter(pk=self.book.pk).exists())
-
-    
