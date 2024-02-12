@@ -243,6 +243,7 @@ class IssueMemberBookView(View):
 
                     book.quantity -= 1
                     book.save()
+                    logger.info("Book Quantity updated successfully.")
 
                     amount += book.borrowing_fee
 
@@ -288,8 +289,15 @@ class UpdateBorrowedBookView(View):
 @method_decorator(login_required, name="dispatch")
 class DeleteBorrowedBookView(View):
     def get(self, request, *args, **kwargs):
-        book = BorrowedBook.objects.get(pk=kwargs["pk"])
-        book.delete()
+        borrowed_book = BorrowedBook.objects.get(pk=kwargs["pk"])
+
+        book = borrowed_book.book
+        book.quantity += 1
+        book.save()
+        logger.info("Book Quantity updated successfully.")
+
+        borrowed_book.delete()
+
         logger.info("Borrowed book deleted successfully.")
         return redirect("issued-books")
 
@@ -297,16 +305,17 @@ class DeleteBorrowedBookView(View):
 @method_decorator(login_required, name="dispatch")
 class ReturnBookView(View):
     def get(self, request, *args, **kwargs):
-        book = BorrowedBook.objects.get(pk=kwargs["pk"])
-        if book.return_date < timezone.now().date():
-            return redirect("return-book-fine", pk=book.pk)
+        borrowed_book = BorrowedBook.objects.get(pk=kwargs["pk"])
+        if borrowed_book.return_date < timezone.now().date():
+            return redirect("return-book-fine", pk=borrowed_book.pk)
 
         else:
-            book.returned = True
-            book.book.save()
+            borrowed_book.returned = True
+            borrowed_book.save()
             logger.info("Book returned successfully.")
 
-            book.book.quantity += 1
+            book = borrowed_book.book
+            book.quantity += 1
             book.save()
             logger.info("Book Quantity updated successfully.")
 
