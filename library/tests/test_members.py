@@ -12,9 +12,10 @@ class TestAddMemberView(TestCase):
         self.user = Librarian.objects.create_user(email="test@gmail.com", password="password")
 
     def test_login_required(self):
-        self.client.post(reverse("add-member"), self.data)
+        response = self.client.post(reverse("add-member"), self.data)
 
         self.assertEqual(Member.objects.count(), 0)
+        self.assertRedirects(response, f"{reverse('login')}?next={reverse('add-member')}")
 
     def test_valid_data_creates_member(self):
         self.client.force_login(self.user)
