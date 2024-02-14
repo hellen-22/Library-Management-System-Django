@@ -72,7 +72,7 @@ class AddBookForm(forms.ModelForm):
         fields = ["title", "author", "category", "quantity", "borrowing_fee"]
 
 
-class IssueBookForm(forms.ModelForm):
+class LendBookForm(forms.ModelForm):
     book = forms.ModelChoiceField(
         label="Book / Books",
         queryset=Book.objects.filter(quantity__gt=0),
@@ -101,7 +101,7 @@ class IssueBookForm(forms.ModelForm):
         fields = ["book", "member", "return_date", "fine"]
 
 
-class IssueMemberBookForm(forms.ModelForm):
+class LendMemberBookForm(forms.ModelForm):
     book = forms.ModelChoiceField(
         queryset=Book.objects.filter(quantity__gt=0),
         empty_label=None,

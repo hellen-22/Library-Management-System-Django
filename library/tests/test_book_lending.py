@@ -27,26 +27,26 @@ class TestLendBookView(TestCase):
         }
 
     def test_login_required(self):
-        response = self.client.post(reverse("issue-book"), self.data)
+        response = self.client.post(reverse("lend-book"), self.data)
 
         self.assertEqual(BorrowedBook.objects.count(), 1)
-        self.assertRedirects(response, f"{reverse('login')}?next={reverse('issue-book')}")
+        self.assertRedirects(response, f"{reverse('login')}?next={reverse('lend-book')}")
 
     def test_valid_data_creates_borrowed_book(self):
         self.client.force_login(self.user)
-        self.client.post(reverse("issue-book"), self.data)
+        self.client.post(reverse("lend-book"), self.data)
 
         self.assertEqual(BorrowedBook.objects.count(), 2)
 
     def test_invalid_data_does_not_create_borrowed_book(self):
         self.client.force_login(self.user)
-        self.client.post(reverse("issue-book"), {"book": "", "member": "", "return_date": "", "fine": ""})
+        self.client.post(reverse("lend-book"), {"book": "", "member": "", "return_date": "", "fine": ""})
 
         self.assertEqual(BorrowedBook.objects.count(), 1)
 
     def test_book_quantity_decreases(self):
         self.client.force_login(self.user)
-        self.client.post(reverse("issue-book"), self.data)
+        self.client.post(reverse("lend-book"), self.data)
 
         self.book.refresh_from_db()
         self.assertEqual(self.book.quantity, 9)
@@ -68,15 +68,15 @@ class TestLendIndividualMemberView(TestCase):
         self.data = {"book": self.book.id, "return_date": "2024-12-12", "fine": 0.00, "payment_method": "cash"}
 
     def test_login_required(self):
-        response = self.client.post(reverse("issue-member-book", kwargs={"pk": self.member.pk}), self.data)
+        response = self.client.post(reverse("lend-member-book", kwargs={"pk": self.member.pk}), self.data)
 
         self.assertRedirects(
-            response, f"{reverse('login')}?next={reverse('issue-member-book', kwargs={'pk': self.member.pk})}"
+            response, f"{reverse('login')}?next={reverse('lend-member-book', kwargs={'pk': self.member.pk})}"
         )
 
     def test_lend_book(self):
         self.client.force_login(self.user)
-        self.client.post(reverse("issue-member-book", kwargs={"pk": self.member.pk}), self.data)
+        self.client.post(reverse("lend-member-book", kwargs={"pk": self.member.pk}), self.data)
 
         self.book.refresh_from_db()
         self.assertEqual(BorrowedBook.objects.count(), 1)
@@ -85,7 +85,7 @@ class TestLendIndividualMemberView(TestCase):
     def test_invalid_data_does_not_lend_book(self):
         self.client.force_login(self.user)
         self.client.post(
-            reverse("issue-member-book", kwargs={"pk": self.member.pk}), {"book": "", "return_date": "", "fine": ""}
+            reverse("lend-member-book", kwargs={"pk": self.member.pk}), {"book": "", "return_date": "", "fine": ""}
         )
 
         self.book.refresh_from_db()
@@ -109,13 +109,13 @@ class TestLentBooksView(TestCase):
         self.borrowed_book2 = BorrowedBook.objects.create(member=self.member, book=self.book, return_date="2021-12-12")
 
     def test_login_required(self):
-        response = self.client.get(reverse("issued-books"))
+        response = self.client.get(reverse("lent-books"))
 
-        self.assertRedirects(response, f"{reverse('login')}?next={reverse('issued-books')}")
+        self.assertRedirects(response, f"{reverse('login')}?next={reverse('lent-books')}")
 
     def test_list_lent_books(self):
         self.client.force_login(self.user)
-        response = self.client.get(reverse("issued-books"))
+        response = self.client.get(reverse("lent-books"))
 
         self.assertContains(response, "Test Title")
         self.assertEqual(BorrowedBook.objects.count(), 2)

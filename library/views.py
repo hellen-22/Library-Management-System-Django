@@ -9,8 +9,8 @@ from django.views.generic import View
 from .forms import (
     AddBookForm,
     AddMemberForm,
-    IssueBookForm,
-    IssueMemberBookForm,
+    LendBookForm,
+    LendMemberBookForm,
     PaymentForm,
     UpdateBorrowedBookForm,
     UpdateMemberForm,
@@ -232,29 +232,29 @@ class DeleteBookView(View):
 
 
 @method_decorator(login_required, name="dispatch")
-class IssueBookView(View):
+class LendBookView(View):
     """
-    Issue Book view for the library management system.
-    get(): Returns the issue book page with the IssueBookForm and PaymentForm.
-    post(): Validates the form and issues the book to the member.
-            Several Books can be issued to the member at once.
+    Lend Book view for the library management system.
+    get(): Returns the lent book page with the LendBookForm and PaymentForm.
+    post(): Validates the form and lends the book to the member.
+            Several Books can be lent to the member at once.
             if the member has exceeded the borrowing limit, an error message is displayed.
             BorrowedBook and Transaction objects are created and the book quantity is updated.
     """
 
     def get(self, request, *args, **kwargs):
-        form = IssueBookForm()
+        form = LendBookForm()
         payment_form = PaymentForm()
 
-        return render(request, "books/issue-book.html", {"form": form, "payment_form": payment_form})
+        return render(request, "books/lend-book.html", {"form": form, "payment_form": payment_form})
 
     def post(self, request, *args, **kwargs):
-        form = IssueBookForm(request.POST)
+        form = LendBookForm(request.POST)
         payment_form = PaymentForm(request.POST)
 
         if form.is_valid() and payment_form.is_valid():
-            issued_book = form.save(commit=False)
-            if issued_book.member.amount_due > 500:
+            lent_book = form.save(commit=False)
+            if lent_book.member.amount_due > 500:
                 form.add_error(None, "Member has exceeded the borrowing limit.")
                 logger.error("Member has exceeded the borrowing limit.")
             else:
@@ -264,12 +264,12 @@ class IssueBookView(View):
                 for book_id in books_ids:
                     book = Book.objects.get(pk=book_id)
                     BorrowedBook.objects.create(
-                        member=issued_book.member,
+                        member=lent_book.member,
                         book=book,
-                        return_date=issued_book.return_date,
-                        fine=issued_book.fine,
+                        return_date=lent_book.return_date,
+                        fine=lent_book.fine,
                     )
-                    logger.info("Book issued successfully.")
+                    logger.info("Book lent successfully.")
 
                     book.quantity -= 1
                     book.save()
@@ -277,23 +277,24 @@ class IssueBookView(View):
 
                     amount += book.borrowing_fee
 
-                Transaction.objects.create(member=issued_book.member, amount=amount, payment_method=payment_method)
+                Transaction.objects.create(member=lent_book.member, amount=amount, payment_method=payment_method)
                 logger.info("Payment made successfully.")
 
-                return redirect("issued-books")
+                return redirect("lent-books")
 
         logger.error(f"Error occurred while issuing book: {form.errors}")
 
-        return render(request, "books/issue-book.html", {"form": form, "payment_form": payment_form})
+        return render(request, "books/lend-book.html", {"form": form, "payment_form": payment_form})
 
 
 @method_decorator(login_required, name="dispatch")
-class IssueMemberBookView(View):
+class LendMemberBookView(View):
     """
-    Issue Member Book view for the library management system. Issuing a book to a specific member selected from the list of members.
-    get(): Returns the issue member book page with the IssueMemberBookForm and PaymentForm.
-    post(): Validates the form and issues the book to the member.
-            Several Books can be issued to the member at once.
+    Lend Member Book view for the library management system.
+    Lending a book to a specific member selected from the list of members.
+    get(): Returns the lend member book page with the LendMemberBookForm and PaymentForm.
+    post(): Validates the form and lends the book to the member.
+            Several Books can be lent to the member at once.
             if the member has exceeded the borrowing limit, an error message is displayed.
             BorrowedBook and Transaction objects are created and the book quantity is updated.
 
@@ -301,15 +302,15 @@ class IssueMemberBookView(View):
 
     def get(self, request, *args, **kwargs):
         member = Member.objects.get(pk=kwargs["pk"])
-        form = IssueMemberBookForm()
+        form = LendMemberBookForm()
         payment_form = PaymentForm()
         return render(
-            request, "books/issue-member-book.html", {"form": form, "payment_form": payment_form, "member": member}
+            request, "books/lend-member-book.html", {"form": form, "payment_form": payment_form, "member": member}
         )
 
     def post(self, request, *args, **kwargs):
         member = Member.objects.get(pk=kwargs["pk"])
-        form = IssueMemberBookForm(request.POST)
+        form = LendMemberBookForm(request.POST)
         payment_form = PaymentForm(request.POST)
 
         if form.is_valid() and payment_form.is_valid():
@@ -326,7 +327,7 @@ class IssueMemberBookView(View):
                     BorrowedBook.objects.create(
                         member=member, book=book, return_date=lended_book.return_date, fine=lended_book.fine
                     )
-                    logger.info("Book issued successfully.")
+                    logger.info("Book lent successfully.")
 
                     book.quantity -= 1
                     book.save()
@@ -337,31 +338,31 @@ class IssueMemberBookView(View):
                 Transaction.objects.create(member=member, amount=amount, payment_method=payment_method)
                 logger.info("Payment made successfully.")
 
-                return redirect("issued-books")
+                return redirect("lent-books")
 
         logger.error(f"Error occurred while issuing book: {form.errors}")
 
         return render(
-            request, "books/issue-member-book.html", {"form": form, "payment_form": payment_form, "member": member}
+            request, "books/lend-member-book.html", {"form": form, "payment_form": payment_form, "member": member}
         )
 
 
 @method_decorator(login_required, name="dispatch")
-class IssuedBooksListView(View):
+class LentBooksListView(View):
     """
-    Issued Books List view for the library management system.
-    get(): Returns the list of books that have been issued to members.
-    post(): Returns the list of books that have been issued to members based on the search query.
+    Lent Books List view for the library management system.
+    get(): Returns the list of books that have been lent to members.
+    post(): Returns the list of books that have been lent to members based on the search query.
     """
 
     def get(self, request, *args, **kwargs):
         books = BorrowedBook.objects.select_related("member", "book")
-        return render(request, "books/issued-books.html", {"books": books})
+        return render(request, "books/lent-books.html", {"books": books})
 
     def post(self, request, *args, **kwargs):
         query = request.POST.get("query")
         books = BorrowedBook.objects.filter(book__title__icontains=query)
-        return render(request, "books/issued-books.html", {"books": books})
+        return render(request, "books/lent-books.html", {"books": books})
 
 
 @method_decorator(login_required, name="dispatch")
@@ -384,7 +385,7 @@ class UpdateBorrowedBookView(View):
         if form.is_valid():
             form.save()
             logger.info("Borrowed book details updated successfully.")
-            return redirect("issued-books")
+            return redirect("lent-books")
         logger.error(f"Error occurred while updating borrowed book: {form.errors}")
 
         return render(request, "books/update-borrowed-book.html", {"form": form, "book": book})
@@ -408,7 +409,7 @@ class DeleteBorrowedBookView(View):
         borrowed_book.delete()
 
         logger.info("Borrowed book deleted successfully.")
-        return redirect("issued-books")
+        return redirect("lent-books")
 
 
 @method_decorator(login_required, name="dispatch")
@@ -416,7 +417,7 @@ class ReturnBookView(View):
     """
     Return Book view for the library management system. Works on a button click.
     get(): Returns the return book page with the PaymentForm.
-           if the book is overdue, the user is redirected to the return-book-fine page. Which asks for the fine payment.
+           if the book is overdue, the user is redirected to the return-book-fine page.
            if the book is not overdue, the book status and the book quantity is updated.
     """
 
@@ -435,7 +436,7 @@ class ReturnBookView(View):
             book.save()
             logger.info("Book Quantity updated successfully.")
 
-            return redirect("issued-books")
+            return redirect("lent-books")
 
 
 @method_decorator(login_required, name="dispatch")
@@ -470,7 +471,7 @@ class ReturnBookFineView(View):
 
             Transaction.objects.create(member=book.member, amount=fine, payment_method=payment_method)
 
-            return redirect("issued-books")
+            return redirect("lent-books")
         logger.error(f"Error occurred while returning book: {form.errors}")
 
         return render(request, "books/return-book-fine.html", {"book": book, "form": form})
