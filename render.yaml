@@ -5,4 +5,3 @@ services:
     runtime: python
     buildCommand: "./build.sh"
     startCommand: "gunicorn core.wsgi:application"
-    

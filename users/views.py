@@ -15,6 +15,7 @@ class LoginView(View):
     get(): Returns the login page with the login form
     post(): Authenticates the user and logs them in
     """
+
     def get(self, request, *args, **kwargs):
         form = LoginForm()
         return render(request, "users/login.html", {"form": form})
@@ -48,6 +49,7 @@ class RegisterView(View):
     get(): Returns the register page with the register form
     post(): Registers the user
     """
+
     def get(self, request, *args, **kwargs):
         form = RegisterForm()
         return render(request, "users/register.html", {"form": form})
@@ -75,6 +77,7 @@ class LogoutView(View):
     Logout view
     get(): Logs the user out
     """
+
     def get(self, request, *args, **kwargs):
         logout(request)
         logger.info("User logged out")
