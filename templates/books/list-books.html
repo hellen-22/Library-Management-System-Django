@@ -14,12 +14,24 @@
                             <a href="{% url 'add-book' %}" class="btn btn-primary">Add Book</a>
                         </div>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-4">
                         <div class="mb-3">
-                            <a href="{% url 'issue-book' %}" class="btn btn-primary">Issue Book</a>
+                            <a href="{% url 'issue-book' %}" class="btn btn-success">Issue Book</a>
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-lg" placeholder="Search Book" name="query">
+                                <button class="btn btn-primary" type="submit">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
             </div>
             <div class="card-body">
                 <div class="table-responsive">

@@ -8,6 +8,17 @@
                 <div class="col-5">
                   <h5 class="card-title mt-4">PAYMENTS LIST</h5>
                 </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-lg" placeholder="Search Payment" name="query">
+                                <button class="btn btn-primary" type="submit">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
             </div>
             <div class="card-body">

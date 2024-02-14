@@ -6,7 +6,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="col-5">
-                  <h5 class="card-title mt-4">BORROWED BOOKS LIST</h5>
+                  <h5 class="card-title mt-4">OVERDUE BOOKS</h5>
                 </div>
                 <div class="row">
                     <div class="col-md-4">
@@ -15,7 +15,13 @@
                         </div>
                     </div>
                     <div class="col-md-8">
-                        <!-- Search  -->
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-lg" placeholder="Search Book" name="query">
+                                <button class="btn btn-primary" type="submit">Search</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -93,10 +93,16 @@ class MembersListView(View):
     """
     Members List view for the library management system.
     get(): Returns the list of members in the library.
+    post(): Returns the list of members in the library based on the search query.
     """
 
     def get(self, request, *args, **kwargs):
         members = Member.objects.all()
+        return render(request, "members/list-members.html", {"members": members})
+
+    def post(self, request, *args, **kwargs):
+        query = request.POST.get("query")
+        members = Member.objects.filter(name__icontains=query)
         return render(request, "members/list-members.html", {"members": members})
 
 
@@ -171,10 +177,16 @@ class BooksListView(View):
     """
     Books List view for the library management system.
     get(): Returns the list of books in the library.
+    post(): Returns the list of books in the library based on the search query.
     """
 
     def get(self, request, *args, **kwargs):
         books = Book.objects.all()
+        return render(request, "books/list-books.html", {"books": books})
+
+    def post(self, request, *args, **kwargs):
+        query = request.POST.get("query")
+        books = Book.objects.filter(title__icontains=query)
         return render(request, "books/list-books.html", {"books": books})
 
 
@@ -339,10 +351,16 @@ class IssuedBooksListView(View):
     """
     Issued Books List view for the library management system.
     get(): Returns the list of books that have been issued to members.
+    post(): Returns the list of books that have been issued to members based on the search query.
     """
 
     def get(self, request, *args, **kwargs):
         books = BorrowedBook.objects.select_related("member", "book")
+        return render(request, "books/issued-books.html", {"books": books})
+
+    def post(self, request, *args, **kwargs):
+        query = request.POST.get("query")
+        books = BorrowedBook.objects.filter(book__title__icontains=query)
         return render(request, "books/issued-books.html", {"books": books})
 
 
@@ -463,10 +481,16 @@ class ListPaymentsView(View):
     """
     List Payment View for the library management system.
     get(): Returns a list of payments made.
+    post(): Returns a list of payments made by a member based on the search query.
     """
 
     def get(self, request, *args, **kwargs):
         payments = Transaction.objects.select_related("member")
+        return render(request, "payments/list-payments.html", {"payments": payments})
+
+    def post(self, request, *args, **kwargs):
+        query = request.POST.get("query")
+        payments = Transaction.objects.filter(member__name__icontains=query)
         return render(request, "payments/list-payments.html", {"payments": payments})
 
 
@@ -488,8 +512,16 @@ class OverdueBooksView(View):
     """
     Overdue Books view for the library management system.
     get(): Returns a list of overdue books.
+    post(): Returns a list of overdue books based on the search query.
     """
 
     def get(self, request, *args, **kwargs):
         overdue_books = BorrowedBook.objects.filter(return_date__lt=timezone.now().date(), returned=False)
+        return render(request, "books/overdue-books.html", {"books": overdue_books})
+
+    def post(self, request, *args, **kwargs):
+        query = request.POST.get("query")
+        overdue_books = BorrowedBook.objects.filter(
+            book__title__icontains=query, return_date__lt=timezone.now().date(), returned=False
+        )
         return render(request, "books/overdue-books.html", {"books": overdue_books})

@@ -14,8 +14,14 @@
                             <a href="{% url 'add-member' %}" class="btn btn-primary">Add Member</a>
                         </div>
                     </div>
-                    <div class="col-md-8">
-                        <!-- Search  -->
+                    <div class="col-md-5">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-lg" placeholder="Search Member" name="query">
+                                <button class="btn btn-primary" type="submit">Search</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
