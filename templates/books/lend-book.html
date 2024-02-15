@@ -5,9 +5,9 @@
     <div class="col-md-6 grid-margin stretch-card">
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title">Issue Book</h4>
+          <h4 class="card-title">Lend Book</h4>
           <p class="card-description">
-            Issue A Borrowed Book To A Member
+            Lend A Book To A Member
           </p>
           {% if form.non_field_errors %}
             <div class="alert alert-danger form-error" role="alert">
@@ -47,7 +47,7 @@
             </div>
 
 
-            <button type="submit" class="btn btn-primary btn-md me-2">Issue</button>
+            <button type="submit" class="btn btn-primary btn-md me-2">Lend</button>
             <a href="{% url 'lent-books' %}" class="btn btn-light">Cancel</a>
           </form>
         </div>

@@ -164,7 +164,13 @@ class AddBookView(View):
         form = AddBookForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            book = form.save(commit=False)
+            if book.quantity == 0:
+                book.status = "not-available"
+            else:
+                book.status = "available"
+            book.save()
+
             logger.info("New book added successfully.")
             return redirect("books")
 
@@ -209,7 +215,13 @@ class UpdateBookDetailsView(View):
         form = AddBookForm(request.POST, instance=book)
 
         if form.is_valid():
-            form.save()
+            book = form.save(commit=False)
+            if book.quantity == 0:
+                book.status = "not-available"
+            else:
+                book.status = "available"
+            book.save()
+
             logger.info("Book details updated successfully.")
             return redirect("books")
 

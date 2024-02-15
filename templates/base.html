@@ -56,10 +56,10 @@
     <ul class="navbar-nav ms-auto">
       <li class="nav-item dropdown d-none d-lg-block user-dropdown">
         <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-          <img class="img-xs rounded-circle" src="{% static 'assets/images/faces/face8.jpg' %}" alt="Profile image"> </a>
+          <i class="mdi mdi-account-circle" style="font-size: 40px;"></i>
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
           <div class="dropdown-header text-center">
-            <img class="img-md rounded-circle" src="{% static 'assets/images/faces/face8.jpg' %}" alt="Profile image">
+            <i class="mdi mdi-account-circle" style="font-size: 40px;"></i>
             <p class="mb-1 mt-3 font-weight-semibold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
             <p class="fw-light text-muted mb-0">{{ request.user.email }}</p>
           </div>
@@ -142,13 +142,7 @@
         <i class="menu-arrow"></i>
       </a>
     </li>
-    <li class="nav-item nav-category">help</li>
-    <li class="nav-item">
-      <a class="nav-link" href="">
-        <i class="menu-icon mdi mdi-file-document"></i>
-        <span class="menu-title">Documentation</span>
-      </a>
-    </li>
+
   </ul>
 </nav>
       <!-- partial -->
