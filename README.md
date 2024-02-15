@@ -27,7 +27,8 @@ A Simple Library Management System that helps in managing a library.
   ```
   On Mac
   ```sql
-  source venv\bin\activate'
+  source venv\bin\activate
+  ```
 - Install libraries from the requirements.txt file.
   ```sql
   pip install -r requirement.txt
