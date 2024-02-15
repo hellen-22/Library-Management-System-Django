@@ -362,7 +362,9 @@ class LentBooksListView(View):
 
     def post(self, request, *args, **kwargs):
         query = request.POST.get("query")
-        books = BorrowedBook.objects.filter(Q(book__title__icontains=query) | Q(book__author__icontains=query))
+        books = BorrowedBook.objects.filter(
+            Q(book__title__icontains=query) | Q(book__author__icontains=query)
+        ).select_related("member", "book")
         return render(request, "books/lent-books.html", {"books": books})
 
 
@@ -492,7 +494,7 @@ class ListPaymentsView(View):
 
     def post(self, request, *args, **kwargs):
         query = request.POST.get("query")
-        payments = Transaction.objects.filter(member__name__icontains=query)
+        payments = Transaction.objects.filter(member__name__icontains=query).select_related("member")
         return render(request, "payments/list-payments.html", {"payments": payments})
 
 
@@ -518,7 +520,9 @@ class OverdueBooksView(View):
     """
 
     def get(self, request, *args, **kwargs):
-        overdue_books = BorrowedBook.objects.filter(return_date__lt=timezone.now().date(), returned=False)
+        overdue_books = BorrowedBook.objects.filter(
+            return_date__lt=timezone.now().date(), returned=False
+        ).select_related("member", "book")
         return render(request, "books/overdue-books.html", {"books": overdue_books})
 
     def post(self, request, *args, **kwargs):
@@ -527,5 +531,5 @@ class OverdueBooksView(View):
             Q(book__title__icontains=query) | Q(book__author__icontains=query),
             return_date__lt=timezone.now().date(),
             returned=False,
-        )
+        ).select_related("member", "book")
         return render(request, "books/overdue-books.html", {"books": overdue_books})
