@@ -33,7 +33,7 @@ A Simple Library Management System that helps in managing a library.
   ```sql
   pip install -r requirement.txt
   ```
-- Edit the .env_sample file to add your environment variables.
+- Edit the *.env.sample* file to add your environment variables.
 - Set up the database:
   ```sql
   python manage.py migrate
