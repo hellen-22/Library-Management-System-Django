@@ -1,6 +1,7 @@
 import logging
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -186,7 +187,7 @@ class BooksListView(View):
 
     def post(self, request, *args, **kwargs):
         query = request.POST.get("query")
-        books = Book.objects.filter(title__icontains=query)
+        books = Book.objects.filter(Q(title__icontains=query) | Q(author__icontains=query))
         return render(request, "books/list-books.html", {"books": books})
 
 
@@ -361,7 +362,7 @@ class LentBooksListView(View):
 
     def post(self, request, *args, **kwargs):
         query = request.POST.get("query")
-        books = BorrowedBook.objects.filter(book__title__icontains=query)
+        books = BorrowedBook.objects.filter(Q(book__title__icontains=query) | Q(book__author__icontains=query))
         return render(request, "books/lent-books.html", {"books": books})
 
 
@@ -523,6 +524,8 @@ class OverdueBooksView(View):
     def post(self, request, *args, **kwargs):
         query = request.POST.get("query")
         overdue_books = BorrowedBook.objects.filter(
-            book__title__icontains=query, return_date__lt=timezone.now().date(), returned=False
+            Q(book__title__icontains=query) | Q(book__author__icontains=query),
+            return_date__lt=timezone.now().date(),
+            returned=False,
         )
         return render(request, "books/overdue-books.html", {"books": overdue_books})
