@@ -32,21 +32,24 @@ A Simple Library Management System that helps in managing a library.
   ```sql
   pip install -r requirement.txt
   ```
-- Edit the .env_sample file to add your environment variables
+- Edit the .env_sample file to add your environment variables.
 - Set up the database:
-```sql
-python manage.py migrate
-```
+  ```sql
+  python manage.py migrate
+  ```
 - Run the server:
-```sql
-python manage.py runserver
-```
+  ```sql
+  python manage.py runserver
+  ```
 
 ### Hosted version
 Hosted version of the project: https://library-wnd0.onrender.com/
+
 Use the following credentials:
+```sql
 Email: admin@gmail.com
 Password: Admin@LMS
+```
 Or register an account.
 
 ### Screenshots
