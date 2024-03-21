@@ -80,6 +80,3 @@ Other Pages.
 <img width="1423" alt="Screenshot 2024-02-15 at 12 13 50" src="https://github.com/hellen-22/Library-Management-System-Django/assets/58620060/643579b1-7811-44c4-a07a-03b5196ccbe5">
 
 <img width="1425" alt="Screenshot 2024-02-15 at 12 18 37" src="https://github.com/hellen-22/Library-Management-System-Django/assets/58620060/91cc7d5c-a15c-4755-ad1b-b112fd098420">
-
-
-
