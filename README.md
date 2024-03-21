@@ -3,8 +3,8 @@ A Simple Library Management System that helps in managing a library.
 
 ### Available Functionalities:
 Definition: CRUD(Create, Read, Update and Delete)
-1. Members Management (Allows CRUD operations for Library Management)
-2. Books Management (Allows CRUD operations for Books)
+1. Members Management (Allows CRUD operations on Library Members)
+2. Books Management (Allows CRUD operations on Books)
 3. Lending of Books to Members.
 4. Returning of Books by Members.
 5. Payment for Borrowing A Book/Books by Members
