@@ -43,7 +43,7 @@
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ member.name }}</td>
                                 <td>{{ member.email }}</td>
-                                <td>{{ member.amount_due }}</td>
+                                <td>{{ member.calculate_amount_due }}</td>
                                 <td>
                                     <a href="{% url 'lend-member-book' member.pk %}" class="btn btn-success">Lend Book</a>
                                 </td>

@@ -1,5 +1,6 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils import timezone
 
 from users.models import AbstractBaseModel
 
@@ -37,6 +38,15 @@ class Member(AbstractBaseModel):
 
     def __str__(self):
         return f"{self.name}"
+
+    def calculate_amount_due(self):
+        borrowed_books = self.borrowed_books.all()
+        amount = 0
+        for book in borrowed_books:
+            if book.return_date < timezone.now().date() and not book.returned:
+                amount += book.fine
+
+        return amount
 
 
 class Book(AbstractBaseModel):
