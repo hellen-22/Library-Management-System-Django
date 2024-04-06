@@ -6,7 +6,7 @@ from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import View
-
+from django.conf import settings #currency settings
 from .forms import (
     AddBookForm,
     AddMemberForm,
@@ -20,6 +20,7 @@ from .models import Book, BorrowedBook, Member, Transaction
 
 logger = logging.getLogger(__name__)
 
+CURRENCY = settings.CURRENCY #initialize
 
 @method_decorator(login_required, name="dispatch")
 class HomeView(View):
@@ -48,8 +49,8 @@ class HomeView(View):
 
         recently_added_books = books.order_by("-created_at")[:4]
 
-        total_amount = sum([payment.amount for payment in Transaction.objects.all()])
-        overdue_amount = sum([book.fine for book in overdue_books])
+        total_amount = f'{CURRENCY} {sum([payment.amount for payment in Transaction.objects.all()])}'
+        overdue_amount = f'{CURRENCY} {sum([book.fine for book in overdue_books])}'
 
         context = {
             "total_members": total_members,
