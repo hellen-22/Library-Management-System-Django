@@ -143,7 +143,8 @@
                         <th>Book Title</th>
                         <th>Author</th>
                         <th>Borrowed Date</th>
-                        <th>Return Date</th>
+                        <th>Due Date</th>
+                        <th>Actual Return Date</th>
                         <th>Status</th>
                         <th>Fine Paid</th>
                     </tr>
@@ -156,6 +157,13 @@
                                 <td>{{ borrowed.book.author }}</td>
                                 <td>{{ borrowed.created_at|date:"Y-m-d" }}</td>
                                 <td>{{ borrowed.return_date }}</td>
+                                <td>
+                                    {% if borrowed.actual_return_date %}
+                                        {{ borrowed.actual_return_date }}
+                                    {% else %}
+                                        <span class="text-muted">N/A</span>
+                                    {% endif %}
+                                </td>
                                 <td>
                                     <span class="badge bg-success">Returned</span>
                                 </td>

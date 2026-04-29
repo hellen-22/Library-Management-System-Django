@@ -480,6 +480,7 @@ class ReturnBookView(View):
 
         else:
             borrowed_book.returned = True
+            borrowed_book.actual_return_date = timezone.now().date()
             borrowed_book.save()
             logger.info("Book returned successfully.")
 
@@ -514,6 +515,7 @@ class ReturnBookFineView(View):
             fine = book.fine
 
             book.returned = True
+            book.actual_return_date = timezone.now().date()
             book.save()
             logger.info("Book returned successfully.")
 

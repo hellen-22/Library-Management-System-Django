@@ -67,6 +67,7 @@ class BorrowedBook(AbstractBaseModel):
     member = models.ForeignKey(Member, on_delete=models.CASCADE, related_name="borrowed_books")
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="borrowed_books")
     return_date = models.DateField()
+    actual_return_date = models.DateField(null=True, blank=True)
     returned = models.BooleanField(default=False)
     fine = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, validators=[MinValueValidator(0.00)])
 
