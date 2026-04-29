@@ -108,6 +108,43 @@ class MembersListView(View):
 
 
 @method_decorator(login_required, name="dispatch")
+class MemberDetailView(View):
+    """
+    Member Detail view for the library management system.
+    get(): Returns the member detail page with:
+        - member: The member object
+        - current_borrowed_books: Books currently borrowed (not returned)
+        - borrowing_history: Books that have been returned
+        - total_overdue_fine: Total fine for overdue books
+    """
+
+    def get(self, request, *args, **kwargs):
+        member = Member.objects.get(pk=kwargs["pk"])
+        all_borrowed_books = member.borrowed_books.select_related("book").order_by("-created_at")
+
+        current_borrowed_books = []
+        borrowing_history = []
+        total_overdue_fine = 0
+
+        for borrowed_book in all_borrowed_books:
+            if borrowed_book.returned:
+                borrowing_history.append(borrowed_book)
+            else:
+                current_borrowed_books.append(borrowed_book)
+                if borrowed_book.is_overdue():
+                    total_overdue_fine += borrowed_book.estimated_fine()
+
+        context = {
+            "member": member,
+            "current_borrowed_books": current_borrowed_books,
+            "borrowing_history": borrowing_history,
+            "total_overdue_fine": total_overdue_fine,
+        }
+
+        return render(request, "members/member-detail.html", context)
+
+
+@method_decorator(login_required, name="dispatch")
 class UpdateMemberDetailsView(View):
     """
     Update Member details view for the library management system.

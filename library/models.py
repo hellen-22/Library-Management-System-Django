@@ -73,6 +73,23 @@ class BorrowedBook(AbstractBaseModel):
     def __str__(self):
         return f"{self.member.name} borrowed {self.book.title} on {self.created_at}"
 
+    def is_overdue(self):
+        if self.returned:
+            return False
+        return self.return_date < timezone.now().date()
+
+    def overdue_days(self):
+        if self.returned or not self.is_overdue():
+            return 0
+        return (timezone.now().date() - self.return_date).days
+
+    def estimated_fine(self):
+        if self.returned:
+            return 0
+        if self.is_overdue():
+            return self.fine
+        return 0
+
 
 class Transaction(AbstractBaseModel):
     member = models.ForeignKey(Member, on_delete=models.CASCADE, related_name="transactions")
