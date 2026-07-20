@@ -164,7 +164,3 @@ cython_debug/
 .env
 .history/
 .DS_Store
-
-pyproject.toml
-setup.cfg
-.pre-commit-config.yaml
