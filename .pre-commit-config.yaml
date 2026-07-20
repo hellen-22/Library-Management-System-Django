@@ -1,5 +1,5 @@
 exclude: '^docs/|/migrations/'
-default_stages: [commit]
+default_stages: [pre-commit]
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -49,4 +49,3 @@ ci:
   autoupdate_schedule: weekly
   skip: []
   submodules: false
-  
