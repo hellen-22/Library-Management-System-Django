@@ -1,0 +1,1 @@
+Unmodified Python router and eleven OPA/Rego modules copied from https://github.com/CS-UCY-SEIT-lab/PrivacyLib-REGO. Application authentication, input validation and persistence are implemented separately.
