@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Privacy checks</title><style>body{font:16px system-ui;max-width:950px;margin:35px auto;padding:20px;background:#f5f7fa;color:#172b4d}button,input,select,textarea{font:inherit;padding:10px;margin:6px 0}textarea,pre{box-sizing:border-box;width:100%}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:white;padding:20px}button{cursor:pointer}</style><p><a href="{% url 'home' %}">Back to library</a></p><h1>Privacy checks</h1><p id="identity">Signed in as {{ request.user.email }}.</p>
+<p>Consent is saved. Other operations return decisions and proposed plans; edits, erasure, transfers, complaints and notifications are not executed.</p>
+<button id="grant">Grant consent</button> <button id="withdraw">Withdraw consent</button>
+<p><label>Operation <select id="policy"><option>consent</option><option>lawful</option><option>information</option><option>access</option><option>rectification</option><option>erasure</option><option>restriction</option><option>portability</option><option>objection</option><option>complaint</option><option>breach</option></select></label></p>
+<label for="body">Request JSON</label><textarea id="body" rows="7">{}</textarea><button id="evaluate">Evaluate</button>
+<pre id="output" role="status">Choose an operation.</pre><p>Exports include your librarian profile only. Shared members, books, lending and payments have no account ownership link and are excluded.</p><script>
+const token="{{ csrf_token|escapejs }}";
+const examples={rectification:{updates:{first_name:'Updated'}},erasure:{fields:['first_name'],reason:'withdrawn_consent'},complaint:{authority_id:'cy-0000',description:'Example only'},breach:{incident_id:'example'}};
+async function send(operation,value,method='POST'){try{const r=await fetch('/gdpr/'+encodeURIComponent(operation)+'/',{method,headers:{'Content-Type':'application/json','X-CSRFToken':token},body:JSON.stringify(value)});const text=await r.text();let data;try{data=JSON.parse(text)}catch{data=text}output.textContent='HTTP '+r.status+'\n'+JSON.stringify(data,null,2)}catch(e){output.textContent=e.message}}
+const policy=document.querySelector('#policy'),body=document.querySelector('#body'),output=document.querySelector('#output');
+policy.onchange=()=>body.value=JSON.stringify(examples[policy.value]||{},null,2);
+document.querySelector('#evaluate').onclick=()=>{try{send(policy.value,JSON.parse(body.value))}catch(e){output.textContent=e.message}};
+document.querySelector('#grant').onclick=()=>send('consent',{value:'yes',withdrawn:false},'PATCH');
+document.querySelector('#withdraw').onclick=()=>send('consent',{value:'yes',withdrawn:true},'PATCH');
+</script></html>
